@@ -1,0 +1,9 @@
+<!doctype html>
+<title>Vingle Lunch</title>
+<h1>Hello, Vinglers!!</h1>
+
+<ul>
+{% for user in users %}
+  <li>{{ user.id }} - {{ user.name }}</li>
+{% endfor %}
+</ul>
