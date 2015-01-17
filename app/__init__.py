@@ -17,7 +17,18 @@ env.register(
     'style',
     assets.Bundle(
         'materialize/dist/css/materialize.min.css',
+        filters='cssutils',
         output='style.css'
+    )
+)
+
+env.register(
+    'script',
+    assets.Bundle(
+        'jquery/dist/jquery.min.js',
+        'materialize/dist/js/materialize.min.js',
+        filters='jsmin',
+        output='script.js'
     )
 )
 
