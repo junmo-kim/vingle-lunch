@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block title %}Past Lunches{% endblock %}
+{% block content %}
+  <h3>{{ user.name }}</h3>
+  <div class="row">
+    <a href="/teams/{{ user.team.id }}">Team {{ user.team.title }}</a>
+  </div>
+  <div class="row">
+    <h4>Past Groups</h4>
+    {% for group in past_groups %}
+    <div class="col s12 m4">
+      <ul class="card collection with-header">
+        <li class="collection-header"><h5><a href="/lunches/{{ group.lunch.id }}">{{ group.lunch.date.strftime("%Y %B %d") }}</a></h5></li>
+    {% for user in group.users %}
+        <li class="collection-item"><a href="/users/{{ user.id }}" class="green-text text-darken-4" style="text-transform: none">{{ user.name }}</a><span class="badge">{{ user.team.key }}</span></li>
+    {% endfor %}
+      </ul>
+    </div>
+    {% endfor %}
+  </div>
+{% endblock %}

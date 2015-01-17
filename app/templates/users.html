@@ -2,27 +2,30 @@
 {% block title %}Home{% endblock %}
 {% block content %}
   <h3>{% if team %}{{ team.title }}{% else %}Vinglers{% endif %}</h3>
-  <table class="bordered striped">
-    <thead>
-      <tr>
-          <th data-field="name">Name</th>
-          <th data-field="team">Team</th>
-          <th data-field="eat">Eat Lunch</th>
-          <th>Edit</th>
-      </tr>
-    </thead>
-    <tbody>{% for user in users %}
-      <tr>
-        <td>{{ user.name }}</td>
-        <td><a href="/teams/{{ user.team.id }}">{{ user.team.title }}</a></td>
-        <td>
-          <form action="#">
-            <input type="checkbox" id="user_eat_{{ user.id }}"{% if user.eat %} checked="checked" {% endif %} class="user_eat_box" />
-            <label for="user_eat_{{ user.id }}" id="user_eat_label_{{ user.id }}">{% if user.eat %}Yes!{% else %}Next...{% endif %}</label>
-          </form>
-        </td>
-        <td><a href="/users/{{ user.id }}/edit"><i class="mdi-image-edit"></i></a></td>
-      </tr>{% endfor %}
-    </tbody>
-  </table>
+  <div class="row">
+    <ul class="collection with-header">
+      <li class="collection-header">
+        <div class="row" style="margin-bottom: 0">
+          <div class="col s12 m6 center">Name</div>
+          <div class="col s6 m3 center">Team</div>
+          <div class="col s4 m2 center">Eat Lunch</div>
+          <div class="col s2 m1 center">Edit</div>
+        </div>
+      </li>
+      {% for user in users %}
+      <li class="collection-item">
+        <div class="row" style="margin-bottom: 0">
+          <div class="col s12 m6"><a href="/users/{{ user.id }}" class="green-text text-darken-4">{{ user.name }}</a></div>
+          <div class="col s6 m3"><a href="/teams/{{ user.team.id }}">{{ user.team.title }}</a></div>
+          <div class="col s4 m2">
+            <form action="#">
+              <input type="checkbox" id="user_eat_{{ user.id }}"{% if user.eat %} checked="checked" {% endif %} class="user_eat_box" />
+              <label for="user_eat_{{ user.id }}" id="user_eat_label_{{ user.id }}">{% if user.eat %}Yes!{% else %}Next...{% endif %}</label>
+            </form>
+          </div>
+          <div class="col s2 m1"><a href="/users/{{ user.id }}/edit"><i class="mdi-image-edit"></i></a></div>
+        </div>
+      </li>{% endfor %}
+    </ul>
+  </div>
 {% endblock %}

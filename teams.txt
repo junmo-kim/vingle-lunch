@@ -1,7 +1,0 @@
-ENG	Engineering
-PRO	Product
-MAR_KO	Korean Marketing
-MAR_EN	English Marketing
-MAR_JP	Japanese Marketing
-MAR_CN	Chinese Marketing
-THE_VENTURES	The Ventures

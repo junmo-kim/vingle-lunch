@@ -1,22 +1,39 @@
 from app import db
-from app.models import User, Team
+from app.models import User, Team, Lunch, Group
+import json
 
-with open('teams.txt', 'r') as f:
-    for line in f:
-        team_data = line.rstrip().split('\t')
-        if len(team_data) != 2:
-            continue
-        team = Team(team_data[1], team_data[0])
-        db.session.add(team)
-    db.session.commit()
+teams_json=open('legacy/teams.json')
+teams_data = json.load(teams_json)
+for team_data in teams_data:
+    team = Team(team_data[1], team_data[0])
+    print ('[%s] %r' % (team.key, team.title))
+    db.session.add(team)
+teams_json.close()
+db.session.commit()
+print('\n')
 
-with open('users.txt', 'r') as f:
-    for line in f:
-        user_data = line.rstrip().split('\t')
-        if len(user_data) != 2:
-            continue
-        team = Team.query.filter_by(key=user_data[1]).first()
-        print ('[%s] %r' % (user_data[1], team))
-        user = User(user_data[0], team)
-        db.session.add(user)
-    db.session.commit()
+users_json=open('legacy/users.json')
+users_data = json.load(users_json)
+for user_data in users_data:
+    team = Team.query.filter_by(key=user_data[1]).first()
+    user = User(user_data[0], team)
+    print ('[%s] %r' % (user.team.key, user.name))
+    db.session.add(user)
+users_json.close()
+db.session.commit()
+print('\n')
+
+lunches_json=open('legacy/lunches.json')
+lunches_data = json.load(lunches_json)
+for lunch_data in lunches_data:
+    lunch = Lunch()
+    for group_data in lunch_data:
+        group = Group()
+        group.lunch = lunch
+        for user_id in group_data:
+            user = User.query.get(user_id)
+            group.users.append(user)
+        db.session.add(group)
+    db.session.add(lunch)
+lunches_json.close()
+db.session.commit()

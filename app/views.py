@@ -14,6 +14,12 @@ def index():
     users = User.query.filter(User.deactivate!=True).order_by(User.eat.desc()).all()
     return render_template('users.html', team=None, users=users)
 
+@app.route('/teams/<int:team_id>')
+def team(team_id):
+    team = Team.query.get(team_id)
+    users = team.users.order_by(User.eat.desc()).filter(User.deactivate!=True)
+    return render_template('users.html', team=team, users=users)
+
 @app.route('/teams/new', methods=('GET', 'POST'))
 def new_team():
     form = TeamForm()
@@ -23,11 +29,6 @@ def new_team():
         db.session.commit()
         return redirect('/')
     return render_template('new_team.html', form=form)
-
-@app.route('/teams/<int:team_id>')
-def team(team_id):
-    team = Team.query.get(team_id)
-    return render_template('users.html', team=team, users=team.users.order_by(User.eat.desc()))
 
 @app.route('/users')
 def users():
@@ -43,6 +44,17 @@ def new_user():
         return redirect('/')
     return render_template('edit_user.html', form=form, user=None)
 
+@app.route('/users/deactivated')
+def deactivated_user():
+    users = User.query.filter_by(deactivate=True)
+    return render_template('users.html', team=None, users=users)
+
+@app.route('/users/<int:user_id>')
+def user(user_id):
+    user = User.query.get(user_id)
+    groups = Group.query.filter(Group.users.any(id=user_id)).order_by(Group.lunch_id.desc()).limit(3)
+    return render_template('user.html', user=user, past_groups=groups)
+
 @app.route('/users/<int:user_id>/edit', methods=('GET', 'POST'))
 def edit_user(user_id):
     form = UserForm()
@@ -55,11 +67,6 @@ def edit_user(user_id):
     form.name.data = user.name
     form.team.data = user.team
     return render_template('edit_user.html', form=form, user=user)
-
-@app.route('/users/<int:user_id>')
-def user(user_id):
-    user = User.query.get(user_id)
-    return user.name
 
 @app.route('/users/<int:user_id>/<state>')
 def activate_user(user_id, state):
@@ -83,7 +90,7 @@ def eat_lunch(user_id, eat):
 
 @app.route('/lunches')
 def lunches():
-    lunches = Lunch.query.all()
+    lunches = Lunch.query.order_by(Lunch.date.desc()).all()
     return render_template('lunches.html', lunches=lunches)
 
 MAX_MEMBER = 5
