@@ -1,4 +1,6 @@
 from app import db
+from werkzeug.contrib.cache import SimpleCache
+cache = SimpleCache()
 
 class User(db.Model):
     __tablename__ = 'users'
@@ -19,18 +21,32 @@ class User(db.Model):
     def __repr__(self):
         return '<User %r: %r>' % (self.id, self.name)
 
+    @classmethod
+    def active_users(self):
+        return self.query.filter(self.deactivate!=True).order_by(self.eat.desc()).all()
+
     def past_groups(self, max_number=3):
         groups = Group.query.filter(Group.users.any(id=self.id))\
                                           .order_by(Group.lunch_id.desc())\
                                           .limit(max_number)
         return groups
 
+    def group_in_lunch_cache_key(self, lunch):
+        return 'group_in_lunch_%d_%d' % (self.id, lunch.id)
+
     def group_in_lunch(self, lunch):
-        try:
-            group = Group.query.filter_by(lunch=lunch).filter(Group.users.any(id=self.id)).all()[0]
-        except:
+        group = cache.get(self.group_in_lunch_cache_key(lunch))
+        if group == False:
             return None
-        return  group
+        elif group:
+            return group
+        else:
+            try:
+                group = Group.query.filter_by(lunch=lunch).filter(Group.users.any(id=self.id)).all()[0]
+            except:
+                group = False
+            cache.set(self.group_in_lunch_cache_key(lunch), group, timeout=8 * 24 * 60)
+            return  group
 
 class Team(db.Model):
     __tablename__ = 'teams'

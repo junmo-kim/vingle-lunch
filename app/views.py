@@ -12,7 +12,7 @@ import sys
 @app.route('/')
 @app.route('/index')
 def index():
-    users = User.query.filter(User.deactivate!=True).order_by(User.eat.desc()).all()
+    users = User.active_users()
     return render_template('users.html', team=None, users=users)
 
 @app.route('/teams/<int:team_id>')
