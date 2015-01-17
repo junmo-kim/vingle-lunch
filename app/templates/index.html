@@ -8,7 +8,7 @@
 <h2>Teams</h2>
 <ul>
 {% for team in teams %}
-  <li><a href="/teams/{{ team.id }}">{{ team.key }} {{ team.title }}</a></li>
+  <li><a href="/teams/{{ team.id }}">[{{ team.key }}] {{ team.title }}</a></li>
 {% endfor %}
 </ul>
 
