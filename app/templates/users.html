@@ -23,7 +23,7 @@
               <label for="user_eat_{{ user.id }}" id="user_eat_label_{{ user.id }}">{% if user.eat %}Yes!{% else %}Next...{% endif %}</label>
             </form>
           </div>
-          <div class="col s2 m1"><a href="/users/{{ user.id }}/edit"><i class="mdi-image-edit"></i></a></div>
+          <div class="col s2 m1 center"><a href="/users/{{ user.id }}/edit"><i class="mdi-image-edit"></i></a></div>
         </div>
       </li>{% endfor %}
     </ul>

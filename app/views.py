@@ -52,7 +52,7 @@ def deactivated_user():
 @app.route('/users/<int:user_id>')
 def user(user_id):
     user = User.query.get(user_id)
-    groups = Group.query.filter(Group.users.any(id=user_id)).order_by(Group.lunch_id.desc()).limit(3)
+    groups = user.past_groups()
     return render_template('user.html', user=user, past_groups=groups)
 
 @app.route('/users/<int:user_id>/edit', methods=('GET', 'POST'))
@@ -92,6 +92,9 @@ def eat_lunch(user_id, eat):
 def lunches():
     lunches = Lunch.query.order_by(Lunch.date.desc()).all()
     return render_template('lunches.html', lunches=lunches)
+
+def penalty(user, users, past_lunches):
+    pass
 
 MAX_MEMBER = 5
 @app.route('/lunches/new', methods=('GET', 'POST'))

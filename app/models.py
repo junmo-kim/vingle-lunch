@@ -19,6 +19,12 @@ class User(db.Model):
     def __repr__(self):
         return '<User %r: %r>' % (self.id, self.name)
 
+    def past_groups(self, max_number=3):
+        groups = Group.query.filter(Group.users.any(id=self.id))\
+                                          .order_by(Group.lunch_id.desc())\
+                                          .limit(max_number)
+        return groups
+
 class Team(db.Model):
     __tablename__ = 'teams'
     id = db.Column(db.Integer, primary_key=True)
