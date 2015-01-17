@@ -1,0 +1,8 @@
+<!DOCTYPE html>
+<form method="POST" action="/users/{{ user.id }}/edit">
+  {{ form.csrf_token }}
+  {{ form.name.label }} {{ form.name(size=20, value=user.name) }}
+  {{ form.team.label }} {{ form.team }}
+  <input type="submit" value="Edit">
+</form>
+

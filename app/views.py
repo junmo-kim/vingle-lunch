@@ -40,3 +40,15 @@ def new_user():
         return redirect('/')
     return render_template('new_user.html', form=form)
 
+@app.route('/users/<int:user_id>/edit', methods=('GET', 'POST'))
+def edit_user(user_id):
+    form = UserForm()
+    user = User.query.get(user_id)
+    form.team.data = user.team
+    if form.validate_on_submit():
+        user.name = form.name.data
+        user.team = form.team.data
+        db.session.commit()
+        return redirect('/')
+    return render_template('edit_user.html', form=form, user=user)
+
