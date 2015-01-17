@@ -1,0 +1,4 @@
+<!DOCTYPE html>
+{% for lunch in lunches %}
+<a href="/lunches/{{ lunch.id }}">{{ lunch.id }} - {{ lunch.date }}</a>
+{% endfor %}

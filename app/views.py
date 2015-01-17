@@ -76,6 +76,11 @@ def eat_lunch(user_id, eat):
     db.session.commit()
     return redirect('/')
 
+@app.route('/lunches')
+def lunches():
+    lunches = Lunch.query.all()
+    return render_template('lunches.html', lunches=lunches)
+
 @app.route('/lunches/new', methods=('GET', 'POST'))
 def create_lunch():
     form = LunchDataForm()
