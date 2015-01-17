@@ -37,18 +37,19 @@ def new_user():
         db.session.add(user)
         db.session.commit()
         return redirect('/')
-    return render_template('new_user.html', form=form)
+    return render_template('edit_user.html', form=form, user=None)
 
 @app.route('/users/<int:user_id>/edit', methods=('GET', 'POST'))
 def edit_user(user_id):
     form = UserForm()
     user = User.query.get(user_id)
-    form.team.data = user.team
     if form.validate_on_submit():
         user.name = form.name.data
         user.team = form.team.data
         db.session.commit()
         return redirect('/')
+    form.name.data = user.name
+    form.team.data = user.team
     return render_template('edit_user.html', form=form, user=user)
 
 @app.route('/users/<int:user_id>')
@@ -81,6 +82,7 @@ def lunches():
     lunches = Lunch.query.all()
     return render_template('lunches.html', lunches=lunches)
 
+MAX_MEMBER = 5
 @app.route('/lunches/new', methods=('GET', 'POST'))
 def create_lunch():
     form = LunchDataForm()
@@ -101,23 +103,21 @@ def create_lunch():
     else:
         users = User.query.filter(User.deactivate!=True, User.eat!=False).all()
         shuffle(users)
-        group_count = math.ceil(len(users) / 5)
+        group_count = math.ceil(len(users) / MAX_MEMBER)
 
         groups = []
         groups_data = []
         for i in range(group_count):
-            groups.append([])
+            groups.append(dict(users=[]))
             groups_data.append([])
 
         for index, user in enumerate(users):
             group_index = index % group_count 
-            groups[group_index].append(user)
+            groups[group_index].get('users').append(user)
             groups_data[group_index].append(user.id)
-
-        user_string = '<br><br>'.join(map(lambda g: '<br>'.join(map(lambda u: u.name, g)), groups))
-        return render_template('new_lunch.html', form=form, groups=groups, groups_data=json.dumps(groups_data))
+        return render_template('lunch.html', form=form, date=datetime.datetime.now(), groups=groups, groups_data=json.dumps(groups_data))
 
 @app.route('/lunches/<int:lunch_id>')
 def lunch(lunch_id):
     lunch = Lunch.query.get(lunch_id)
-    return render_template('lunch.html', lunch=lunch)
+    return render_template('lunch.html', date=lunch.date, groups=lunch.groups)

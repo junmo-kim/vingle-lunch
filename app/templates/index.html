@@ -1,22 +1,30 @@
 {% extends "base.html" %}
 {% block title %}Home{% endblock %}
 {% block content %}
-  <h1>Hello, Vinglers!!</h1>
-
-  <a href="/users/new">New user</a>
-  <a href="/lunches">Past lunches</a>
+  <h3>Users</h3>
+  <table class="bordered striped">
+    <thead>
+      <tr>
+          <th data-field="name">Name</th>
+          <th data-field="team">Team</th>
+          <th data-field="eat">Eat Lunch</th>
+          <th>Edit</th>
+      </tr>
+    </thead>
+    <tbody>{% for user in users %}
+      <tr>
+        <td>{{ user.name }}</td>
+        <td>{{ user.team.title }}</td>
+        <td>{{ user.eat }}</td>
+        <td><a href="/users/{{ user.id }}/edit">Edit</a></td>
+      </tr>{% endfor %}
+    </tbody>
+  </table>        
 
   <h2>Teams</h2>
-  <ul>
+  <ul class="collection">
   {% for team in teams %}
-    <li><a href="/teams/{{ team.id }}">[{{ team.key }}] {{ team.title }}</a></li>
-  {% endfor %}
-  </ul>
-
-  <h2>Users</h2>
-  <ul>
-  {% for user in users %}
-    <li>{{ user.eat }} <a href="/users/{{ user.id }}/edit">{{ user.name }} [{{ user.team.key }}]</a></li>
+    <li class="collection-item"><a href="/teams/{{ team.id }}">[{{ team.key }}] {{ team.title }}</a></li>
   {% endfor %}
   </ul>
 {% endblock %}

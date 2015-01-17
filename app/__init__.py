@@ -10,15 +10,19 @@ env = assets.Environment(app)
 
 env.load_path = [
     os.path.join(os.path.dirname(__file__), '../bower_components'),
+    os.path.join(os.path.dirname(__file__), 'assets'),
 ]
-
 
 env.register(
     'style',
     assets.Bundle(
         'materialize/dist/css/materialize.min.css',
+            assets.Bundle(
+            'scss/main.scss',
+            filters='scss',
+        ),
         filters='cssutils',
-        output='style.css'
+        output='css/style.css'
     )
 )
 
@@ -27,8 +31,9 @@ env.register(
     assets.Bundle(
         'jquery/dist/jquery.min.js',
         'materialize/dist/js/materialize.min.js',
+        'js/main.js',
         filters='jsmin',
-        output='script.js'
+        output='js/script.js'
     )
 )
 

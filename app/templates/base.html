@@ -5,12 +5,25 @@
   {% assets "style" %}
   <link rel="stylesheet" type="text/css" href="{{ ASSET_URL }}"></script>
   {% endassets %}
-  {% assets "script" %}
-  <script type="text/javascript" src="{{ ASSET_URL }}"></script>
-  {% endassets %}
+  <meta name="viewport" content="width=device-width, user-scalable=no">
   <title>{% block title %}{% endblock %} - Vingle Lunch</title>
 </head>
 <body>
-  <div id="content">{% block content %}{% endblock %}</div>
+  {% assets "script" %}
+  <script type="text/javascript" src="{{ ASSET_URL }}"></script>
+  {% endassets %}
+ <nav>
+    <div class="nav-wrapper green darken-3">
+      <a href="/" class="brand-logo">Vingle Coffee</a>
+      <ul id="nav-mobile" class="right side-nav">
+        <li><a href="/users/new"><i class="mdi-social-group-add left"></i>New User</a></li>
+        <li><a href="/lunches"><i class="mdi-file-folder left"></i>Past Lunches</a></li>
+      </ul>
+      <!-- Include this line below -->
+      <a class="button-collapse" href="#" data-activates="nav-mobile"><i class="mdi-navigation-menu"></i></a>
+      <!-- End -->
+    </div>
+  </nav>
+  <div id="content" class="container">{% block content %}{% endblock %}</div>
 </body>
 </html>

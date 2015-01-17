@@ -1,8 +1,24 @@
-<!DOCTYPE html>
-<form method="POST" action="/users/{{ user.id }}/edit">
-  {{ form.csrf_token }}
-  {{ form.name.label }} {{ form.name(size=20, value=user.name) }}
-  {{ form.team.label }} {{ form.team }}
-  <input type="submit" value="Edit">
-</form>
-
+{% extends "base.html" %}
+{% block title %}{% if user %}Edit Vingler{% else %}New Vingler{% endif %}{% endblock %}
+{% block content %}
+  <div class="row">
+    <form method="POST" action="new">
+      {{ form.csrf_token }}
+      <div class="row">
+        <div class="input-field col s6">
+          {{ form.name.label }} {{ form.name(class_='validate') }}
+        </div>
+      </div>
+      <div class="row">
+        <div class="col s6">
+            {{ form.team.label }} {{ form.team }}
+          </div>
+      </div>
+      <div class="row">
+        <button class="btn waves-effect waves-light" type="submit" name="action">{% if user %}Apply{% else %}Create{% endif %}
+        <i class="mdi-content-send right"></i>
+        </button>
+      </div>
+    </form>
+  </div>
+{% endblock %}

@@ -1,13 +1,37 @@
-<!DOCTYPE html>
-{{ lunch.date }}
-<ul>
-{% for group in lunch.groups %}
-  <li>
-    <ul>
-  {% for user in group.users %}
-      <li>{{ user }}</li>
+{% extends "base.html" %}
+{% block title %}Lunch{% endblock %}
+{% block content %}
+  <h3>{{ date.strftime("%Y %B %d") }}</h3>
+  <div class="row">
+  {% for group in groups %}
+    <div class="col s12 m6">
+      <ul class="card collection with-header">
+        <li class="collection-header"><h5>{{ loop.index }} Team</h5></li>
+    {% for user in group.users %}
+        <li class="collection-item">{{ user.name }}<span class="badge">{{ user.team.key }}</span></li>
+    {% endfor %}
+      </ul>
+    </div>
+    {% if loop.index is divisibleby 2 %}
+  </div>
+  <div class="row">
+    {% endif %}
   {% endfor %}
-    </ul>
-  </li>
-{% endfor %}
-</ul>
+  </div>
+  <div class="row">
+  {% if groups_data %}
+    <form method="POST" action="new">
+      {{ form.csrf_token }}
+      {{ form.data(value=groups_data) }}
+      <div class="row right">
+        <a class="btn grey waves-effect waves-light" href="new">Retry
+          <i class="mdi-navigation-refresh right"></i>
+        </a>
+        <button class="btn waves-effect waves-light" type="submit" name="action">Accept
+          <i class="mdi-content-send right"></i>
+        </button>
+      </div>
+    </form>
+  </div>
+  {% endif %}
+{% endblock %}

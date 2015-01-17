@@ -5,15 +5,15 @@ from wtforms.validators import DataRequired
 from app.models import Team
 
 class TeamForm(Form):
-    title = StringField('title', validators=[DataRequired()])
-    key = StringField('key', validators=[DataRequired()])
+    title = StringField('Title', validators=[DataRequired()])
+    key = StringField('Key', validators=[DataRequired()])
 
 def enabled_teams():
     return Team.query.all()
 
 class UserForm(Form):
-    name = StringField('name', validators=[DataRequired()])
-    team = QuerySelectField(query_factory=enabled_teams, allow_blank=True)
+    name = StringField('Name', validators=[DataRequired()])
+    team = QuerySelectField('Team', query_factory=enabled_teams, allow_blank=True, blank_text='Choose your team')
 
 class LunchDataForm(Form):
-	data = HiddenField('data', validators=[DataRequired()])
+	data = HiddenField('Data', validators=[DataRequired()])
