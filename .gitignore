@@ -2,6 +2,12 @@
 app.db
 db_repository/
 
+# Bower
+bower_components/
+
+# webassets
+.webassets-cache
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

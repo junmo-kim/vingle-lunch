@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html>
+<head>
+  {% block head %}{% endblock %}
+  {% assets "style" %}
+  <link rel="stylesheet" type="text/css" href="{{ ASSET_URL }}"></script>
+  {% endassets %}
+  <title>{% block title %}{% endblock %} - Vingle Lunch</title>
+</head>
+<body>
+  <div id="content">{% block content %}{% endblock %}</div>
+</body>
+</html>
