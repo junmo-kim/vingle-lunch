@@ -2,8 +2,18 @@
 <title>Vingle Lunch</title>
 <h1>Hello, Vinglers!!</h1>
 
+<a href="/users/new">New user</a>
+
+<h2>Teams</h2>
+<ul>
+{% for team in teams %}
+  <li><a href="/teams/{{ team.id }}">{{ team.key }} {{ team.title }}</a></li>
+{% endfor %}
+</ul>
+
+<h2>Users</h2>
 <ul>
 {% for user in users %}
-  <li>{{ user.id }} - {{ user.name }}</li>
+  <li>{{ user.name }} [{{ user.team.key }}]</li>
 {% endfor %}
 </ul>

@@ -1,0 +1,8 @@
+<!DOCTYPE html>
+<form method="POST" action="/users/new">
+  {{ form.csrf_token }}
+  {{ form.name.label }} {{ form.name(size=20) }}
+  {{ form.team.label }} {{ form.team }}
+  <input type="submit" value="Create">
+</form>
+
