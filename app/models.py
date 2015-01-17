@@ -25,6 +25,13 @@ class User(db.Model):
                                           .limit(max_number)
         return groups
 
+    def group_in_lunch(self, lunch):
+        try:
+            group = Group.query.filter_by(lunch=lunch).filter(Group.users.any(id=self.id)).all()[0]
+        except:
+            return None
+        return  group
+
 class Team(db.Model):
     __tablename__ = 'teams'
     id = db.Column(db.Integer, primary_key=True)

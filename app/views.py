@@ -7,6 +7,7 @@ import math
 import json
 import datetime
 import operator
+import sys
 
 @app.route('/')
 @app.route('/index')
@@ -93,10 +94,20 @@ def lunches():
     lunches = Lunch.query.order_by(Lunch.date.desc()).all()
     return render_template('lunches.html', lunches=lunches)
 
-def penalty(user, users, past_lunches):
-    pass
-
 MAX_MEMBER = 5
+def compute_penalty(user, users, past_lunches):
+    if len(users) >= MAX_MEMBER:
+        return sys.maxsize
+
+    penalty = len(users) / 32.0
+    for index, lunch in enumerate(past_lunches):
+        group = user.group_in_lunch(lunch)
+        if group:
+            for colleague in users:
+                if group == colleague.group_in_lunch(lunch):
+                    penalty += 1.0 / math.pow(2, (index + 2))
+    return penalty
+
 @app.route('/lunches/new', methods=('GET', 'POST'))
 def create_lunch():
     form = LunchDataForm()
@@ -119,16 +130,29 @@ def create_lunch():
         shuffle(users)
         group_count = math.ceil(len(users) / MAX_MEMBER)
 
+        past_lunches = Lunch.query.order_by(Lunch.date.desc()).limit(3)
+
         groups = []
         groups_data = []
         for i in range(group_count):
-            groups.append(dict(users=[]))
+            groups.append(dict(users=[], penalties=[]))
             groups_data.append([])
 
         for index, user in enumerate(users):
-            group_index = index % group_count 
-            groups[group_index].get('users').append(user)
-            groups_data[group_index].append(user.id)
+            target_group = None
+            target_index = 0
+            min_penalty = sys.maxsize
+            for index, group in enumerate(groups):
+                penalty = compute_penalty(user, group.get('users'), past_lunches)
+                if penalty < min_penalty:
+                    min_penalty = penalty
+                    target_group = group
+                    target_index = index
+                if penalty == 0:
+                    break
+            target_group.get('penalties').append(penalty)
+            target_group.get('users').append(user)
+            groups_data[target_index].append(user.id)
         return render_template('lunch.html', form=form, date=datetime.datetime.now(), groups=groups, groups_data=json.dumps(groups_data))
 
 @app.route('/lunches/<int:lunch_id>')
