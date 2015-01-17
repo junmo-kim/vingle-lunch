@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<form method="POST" action="/teams/new">
+<form method="POST" action="new">
   {{ form.csrf_token }}
   {{ form.title.label }} {{ form.title(size=20) }}
   {{ form.key.label }} {{ form.key(size=20) }}

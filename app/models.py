@@ -3,14 +3,18 @@ from app import db
 class User(db.Model):
     __tablename__ = 'users'
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(256), index=True, unique=True)
+    name = db.Column(db.String(256), unique=True)
+    deactivate = db.Column(db.Boolean, index=True)
+    eat = db.Column(db.Boolean)
 
     team_id = db.Column(db.Integer, db.ForeignKey('teams.id'))
     team = db.relationship('Team', backref=db.backref('teams', lazy='dynamic'))
 
-    def __init__(self, name, team=0):
+    def __init__(self, name, team=None):
         self.name = name
         self.team = team
+        self.deactivate = False
+        self.eat = True
 
     def __repr__(self):
         return '<User %r: %r>' % (self.id, self.name)
@@ -31,3 +35,24 @@ class Team(db.Model):
     def __str__(self):
         return self.title
 
+user_group = db.Table('user_group',
+    db.Column('group_id', db.Integer, db.ForeignKey('groups.id')),
+    db.Column('user_id', db.Integer, db.ForeignKey('users.id'))
+)
+
+class Group(db.Model):
+    __tablename__ = 'groups'
+    id = db.Column(db.Integer, primary_key=True)
+
+    users = db.relationship('User', secondary=user_group,
+      backref=db.backref('groups', lazy='dynamic'))
+
+    lunch_id = db.Column(db.Integer, db.ForeignKey('lunches.id'))
+    lunch = db.relationship('Lunch', backref=db.backref('lunches', lazy='dynamic'))
+
+class Lunch(db.Model):
+    __tablename__ = 'lunches'
+    id = db.Column(db.Integer, primary_key=True)
+    date = db.Column(db.DateTime)
+
+    groups = db.relationship('Group', backref='groups', lazy='dynamic')

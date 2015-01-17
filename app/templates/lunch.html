@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+{{ lunch.date }}
+<ul>
+{% for group in lunch.groups %}
+  <li>
+    <ul>
+  {% for user in group.users %}
+      <li>{{ user }}</li>
+  {% endfor %}
+    </ul>
+  </li>
+{% endfor %}
+</ul>

@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<ul>
+{% for group in groups %}
+  <li>
+    <ul>
+  {% for user in group %}
+      <li>{{ user.name }}</li>
+  {% endfor %}
+    </ul>
+  </li>
+{% endfor %}
+</ul>
+<form method="POST" action="new">
+  {{ form.csrf_token }}
+  {{ form.data(value=groups_data) }}
+  <input type="submit" value="Accept">
+</form>
