@@ -123,6 +123,10 @@ def create_lunch():
                 group.users.append(user)
             db.session.add(group)
         db.session.add(lunch)
+
+        all_users = User.query.all()
+        for user in all_users:
+            user.eat = True
         db.session.commit()
         return redirect('/lunches/%d' % lunch.id)
     else:
