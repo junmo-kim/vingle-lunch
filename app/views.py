@@ -6,13 +6,13 @@ from random import shuffle
 import math
 import json
 import datetime
+import operator
 
 @app.route('/')
 @app.route('/index')
 def index():
-    teams = Team.query.all()
-    users = User.query.filter(User.deactivate!=True).all()
-    return render_template('index.html', teams=teams, users=users)
+    users = User.query.filter(User.deactivate!=True).order_by(User.eat.desc()).all()
+    return render_template('users.html', team=None, users=users)
 
 @app.route('/teams/new', methods=('GET', 'POST'))
 def new_team():
@@ -27,7 +27,11 @@ def new_team():
 @app.route('/teams/<int:team_id>')
 def team(team_id):
     team = Team.query.get(team_id)
-    return team.title
+    return render_template('users.html', team=team, users=team.users.order_by(User.eat.desc()))
+
+@app.route('/users')
+def users():
+    return redirect('/')
 
 @app.route('/users/new', methods=('GET', 'POST'))
 def new_user():

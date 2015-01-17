@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}Home{% endblock %}
+{% block content %}
+  <h3>{% if team %}{{ team.title }}{% else %}Vinglers{% endif %}</h3>
+  <table class="bordered striped">
+    <thead>
+      <tr>
+          <th data-field="name">Name</th>
+          <th data-field="team">Team</th>
+          <th data-field="eat">Eat Lunch</th>
+          <th>Edit</th>
+      </tr>
+    </thead>
+    <tbody>{% for user in users %}
+      <tr>
+        <td>{{ user.name }}</td>
+        <td><a href="/teams/{{ user.team.id }}">{{ user.team.title }}</a></td>
+        <td>
+          <form action="#">
+            <input type="checkbox" id="user_eat_{{ user.id }}"{% if user.eat %} checked="checked" {% endif %} class="user_eat_box" />
+            <label for="user_eat_{{ user.id }}" id="user_eat_label_{{ user.id }}">{% if user.eat %}Yes!{% else %}Next...{% endif %}</label>
+          </form>
+        </td>
+        <td><a href="/users/{{ user.id }}/edit"><i class="mdi-image-edit"></i></a></td>
+      </tr>{% endfor %}
+    </tbody>
+  </table>
+{% endblock %}

@@ -25,6 +25,8 @@ class Team(db.Model):
     title = db.Column(db.String(256), unique=True)
     key = db.Column(db.String(32), index=True, unique=True)
 
+    users = db.relationship('User', backref='users', lazy='dynamic')
+
     def __init__(self, title, key):
         self.title = title
         self.key = key
