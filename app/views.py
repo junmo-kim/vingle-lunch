@@ -26,6 +26,19 @@ def team(team_id):
     users = team.users.order_by(User.eat.desc()).filter(User.deactivate!=True)
     return render_template('users.html', team=team, users=users)
 
+@app.route('/teams/<int:team_id>/edit', methods=('GET', 'POST'))
+def edit_team(team_id):
+    form = TeamForm()
+    team = Team.query.get(team_id)
+    if form.validate_on_submit():
+        team.key = form.key.data
+        team.title = form.title.data
+        db.session.commit()
+        return redirect('/teams/%d' % (team_id))
+    form.key.data = team.key
+    form.title.data = team.title
+    return render_template('edit_team.html', form=form, team=team)
+
 @app.route('/teams/new', methods=('GET', 'POST'))
 def new_team():
     form = TeamForm()
@@ -34,7 +47,7 @@ def new_team():
         db.session.add(team)
         db.session.commit()
         return redirect('/')
-    return render_template('new_team.html', form=form)
+    return render_template('edit_team.html', form=form)
 
 @app.route('/users')
 def users():
@@ -165,7 +178,7 @@ def create_lunch():
             for index, group in enumerate(groups):
                 if len(group.get('users')) >= MAX_MEMBER:
                     continue
-                
+
                 penalty = compute_penalty(user, group.get('users'), past_lunches)
                 if penalty < min_penalty:
                     min_penalty = penalty

@@ -1,7 +1,11 @@
 {% extends "base.html" %}
 {% block title %}Home{% endblock %}
 {% block content %}
-  <h3>{% if team %}{{ team.title }}{% else %}Vinglers{% endif %}</h3>
+  <div class="row">
+    <h3>{% if team %}{{ team.title }}{% else %}Vinglers{% endif %}</h3>
+  {% if team %}<a href="/teams/{{ team.id }}/edit" class="right btn waves-effect waves-light">Edit Team
+    <i class="mdi-action-settings left"></i></a>{% endif %}
+  </div>
   <div class="row">
     <ul class="collection with-header">
       <li class="collection-header">
