@@ -114,11 +114,14 @@ def compute_penalty(user, users, past_lunches):
         if group:
             for colleague in users:
                 if group == colleague.group_in_lunch(lunch):
-                    penalty += 1.0 / math.pow(2, (index + 2))
-                if user.gender == colleague.gender:
-                    penalty += 1.0 / 8
-                if user.team == colleague.team:
-                    penalty += 1.0 / 8
+                    penalty += 1.0 / math.pow(2, (index + 1))
+
+    for colleague in users:
+        if user.gender == colleague.gender:
+            penalty += 1.0 / 8
+        if user.team == colleague.team:
+            penalty += 1.0 / 8
+
     return penalty
 
 @app.route('/lunches/new', methods=('GET', 'POST'))
