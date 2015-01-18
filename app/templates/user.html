@@ -4,13 +4,16 @@
   <h3>{{ user.name }}</h3>
   <div class="row">
     <a href="/teams/{{ user.team.id }}">Team {{ user.team.title }}</a>
+    <a href="/users/{{ user.id }}/edit" class="right btn waves-effect waves-light">Edit Profile
+    <i class="mdi-action-settings left"></i></a>
   </div>
   <div class="row">
     <h4>Past Groups</h4>
     {% for group in past_groups %}
     <div class="col s12 m4">
       <ul class="card collection with-header">
-        <li class="collection-header"><h5><a href="/lunches/{{ group.lunch.id }}">{{ group.lunch.date.strftime("%Y %B %d") }}</a></h5></li>
+        <li class="collection-header"><h5><a href="/lunches/{{ group.lunch.id }}">{{ group.lunch.date.strftime("%Y %B %d") }}</a></h5>
+        </li>
     {% for colleague in group.users %}{% if not user.id == colleague.id %}
         <li class="collection-item"><a href="/users/{{ colleague.id }}" class="green-text text-darken-4" style="text-transform: none">{{ colleague.name }}</a><span class="badge">{{ colleague.team.key }}</span></li>
     {% endif %}{% endfor %}

@@ -19,7 +19,7 @@
           <div class="col s6 m3"><a href="/teams/{{ user.team.id }}">{{ user.team.title }}</a></div>
           <div class="col s4 m2">
             <form action="#">
-              <input type="checkbox" id="user_eat_{{ user.id }}"{% if user.eat %} checked="checked" {% endif %} class="user_eat_box" />
+              <input type="checkbox" id="user_eat_{{ user.id }}"{% if user.eat %} checked="checked" {% endif %} class="user_eat_box" {% if user.deactivate %}disabled="disabled" {% endif %}/>
               <label for="user_eat_{{ user.id }}" id="user_eat_label_{{ user.id }}">{% if user.eat %}Yes!{% else %}Next...{% endif %}</label>
             </form>
           </div>
@@ -27,5 +27,6 @@
         </div>
       </li>{% endfor %}
     </ul>
+    {% if not team %}<a href="/users/deactivated" class="grey btn waves-effect waves-light">Deactivated Users</a>{% endif %}
   </div>
 {% endblock %}
