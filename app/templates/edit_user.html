@@ -2,6 +2,9 @@
 {% block title %}{% if user %}Edit Vingler{% else %}New Vingler{% endif %}{% endblock %}
 {% block content %}
   <div class="row">
+    <h3>{% if user %}Edit Vingler{% else %}New Vingler{% endif %}</h3>
+  </div>
+  <div class="row">
     <form method="POST" action="{% if user %}edit{% else %}new{% endif %}">
       {{ form.csrf_token }}
       <div class="row">
