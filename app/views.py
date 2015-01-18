@@ -108,9 +108,6 @@ def lunches():
 
 MAX_MEMBER = 5
 def compute_penalty(user, users, past_lunches):
-    if len(users) >= MAX_MEMBER:
-        return sys.maxsize
-
     penalty = len(users) / 32.0
     for index, lunch in enumerate(past_lunches):
         group = user.group_in_lunch(lunch)
@@ -119,7 +116,9 @@ def compute_penalty(user, users, past_lunches):
                 if group == colleague.group_in_lunch(lunch):
                     penalty += 1.0 / math.pow(2, (index + 2))
                 if user.gender == colleague.gender:
-                    penalty += 1.0 / 16
+                    penalty += 1.0 / 8
+                if user.team == colleague.team:
+                    penalty += 1.0 / 8
     return penalty
 
 @app.route('/lunches/new', methods=('GET', 'POST'))
@@ -168,9 +167,14 @@ def create_lunch():
                     target_index = index
                 if penalty == 0:
                     break
-            target_group.get('penalties').append(penalty)
             target_group.get('users').append(user)
             groups_data[target_index].append(user.id)
+
+        for group in groups:
+            for user in group.get('users'):
+                penalty = compute_penalty(user, group.get('users'), past_lunches)
+                group.get('penalties').append(penalty)
+
         return render_template('lunch.html', form=form, date=datetime.datetime.now(), groups=groups, groups_data=json.dumps(groups_data))
 
 @app.route('/lunches/<int:lunch_id>')
