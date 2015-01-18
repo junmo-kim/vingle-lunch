@@ -8,6 +8,7 @@ class User(db.Model):
     name = db.Column(db.String(256), unique=True)
     deactivate = db.Column(db.Boolean, index=True)
     eat = db.Column(db.Boolean)
+    gender = db.Column(db.String(1))
 
     team_id = db.Column(db.Integer, db.ForeignKey('teams.id'))
     team = db.relationship('Team', backref=db.backref('teams', lazy='dynamic'))

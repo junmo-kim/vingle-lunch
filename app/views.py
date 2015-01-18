@@ -1,7 +1,7 @@
 from app import app, db
 from app.models import Team, User, Group, Lunch
 from app.forms import TeamForm, UserForm, LunchDataForm
-from flask import render_template, redirect
+from flask import render_template, redirect, request
 from random import shuffle
 import math
 import json
@@ -13,7 +13,12 @@ import sys
 @app.route('/index')
 def index():
     users = User.active_users()
-    return render_template('users.html', team=None, users=users)
+
+    admin = False
+    if request.args.get('admin', '') == 'true':
+        admin = True
+
+    return render_template('users.html', team=None, users=users, admin=admin)
 
 @app.route('/teams/<int:team_id>')
 def team(team_id):
@@ -63,11 +68,18 @@ def edit_user(user_id):
     if form.validate_on_submit():
         user.name = form.name.data
         user.team = form.team.data
+        user.gender = form.gender.data
         db.session.commit()
         return redirect('/')
     form.name.data = user.name
     form.team.data = user.team
-    return render_template('edit_user.html', form=form, user=user)
+    form.gender.data = user.gender
+
+    admin = False
+    if request.args.get('admin', '') == 'true':
+        admin = True
+
+    return render_template('edit_user.html', form=form, user=user, admin=admin)
 
 @app.route('/users/<int:user_id>/<state>')
 def activate_user(user_id, state):
@@ -106,6 +118,8 @@ def compute_penalty(user, users, past_lunches):
             for colleague in users:
                 if group == colleague.group_in_lunch(lunch):
                     penalty += 1.0 / math.pow(2, (index + 2))
+                if user.gender == colleague.gender:
+                    penalty += 1.0 / 16
     return penalty
 
 @app.route('/lunches/new', methods=('GET', 'POST'))

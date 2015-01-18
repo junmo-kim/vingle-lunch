@@ -15,7 +15,7 @@
       {% for user in users %}
       <li class="collection-item">
         <div class="row" style="margin-bottom: 0">
-          <div class="col s12 m6"><a href="/users/{{ user.id }}" class="green-text text-darken-4">{{ user.name }}</a></div>
+          <div class="col s12 m6">{% if admin %}{{ user.gender }}{% endif %} <a href="/users/{{ user.id }}" class="green-text text-darken-4">{{ user.name }}</a></div>
           <div class="col s6 m3"><a href="/teams/{{ user.team.id }}">{{ user.team.title }}</a></div>
           <div class="col s4 m2">
             <form action="#">
@@ -23,7 +23,7 @@
               <label for="user_eat_{{ user.id }}" id="user_eat_label_{{ user.id }}">{% if user.eat %}Yes!{% else %}Next...{% endif %}</label>
             </form>
           </div>
-          <div class="col s2 m1 center"><a href="/users/{{ user.id }}/edit"><i class="mdi-image-edit"></i></a></div>
+          <div class="col s2 m1 center"><a href="/users/{{ user.id }}/edit{% if admin %}?admin=true{% endif %}"><i class="mdi-image-edit"></i></a></div>
         </div>
       </li>{% endfor %}
     </ul>
