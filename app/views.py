@@ -163,6 +163,9 @@ def create_lunch():
             target_index = 0
             min_penalty = sys.maxsize
             for index, group in enumerate(groups):
+                if len(group.get('users')) >= MAX_MEMBER:
+                    continue
+                
                 penalty = compute_penalty(user, group.get('users'), past_lunches)
                 if penalty < min_penalty:
                     min_penalty = penalty
