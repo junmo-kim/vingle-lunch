@@ -13,6 +13,7 @@
     "tests"
   ],
   "dependencies": {
-    "materialize": "~0.95.0"
+    "materialize": "~0.95.0",
+    "jquery.countdown": "~2.0.4"
   }
 }

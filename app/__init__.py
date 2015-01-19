@@ -31,6 +31,7 @@ env.register(
     assets.Bundle(
         'jquery/dist/jquery.min.js',
         'materialize/dist/js/materialize.min.js',
+        'jquery.countdown/dist/jquery.countdown.min.js',
         'js/main.js',
         filters='jsmin',
         output='js/script.js'
