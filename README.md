@@ -55,6 +55,7 @@
 8. Create db
   ```
   $ (env) python db_create.py
+  $ (env) python db_migrate.py # generate 1st migration point
   $ (env) python add_legacy.py	# optional
   ```
   
