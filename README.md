@@ -19,7 +19,7 @@
 2. Setting Python 3 virtual environment
   ```
   $ cd vingle-lunch
-  $ virtualenv env -p /usr/bin/python3	# python 3 path
+  $ virtualenv env -p /usr/bin/python3    # python 3 path
   ```
   
 3. Activate virtual environment
@@ -55,8 +55,8 @@
 8. Create db
   ```
   $ (env) python db_create.py
-  $ (env) python db_migrate.py # generate 1st migration point
-  $ (env) python add_legacy.py	# optional
+  $ (env) python db_migrate.py    # generate 1st migration point
+  $ (env) python add_legacy.py    # optional
   ```
   
 9. Run development server
