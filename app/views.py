@@ -1,13 +1,17 @@
 from app import app, db
 from app.models import Team, User, Group, Lunch
 from app.forms import TeamForm, UserForm, LunchDataForm
-from flask import render_template, redirect, request
+from flask import render_template, redirect, request, send_from_directory
 from random import shuffle
 import math
 import json
 import datetime
 import operator
 import sys
+
+@app.route('/robots.txt')
+def static_from_root():
+    return send_from_directory(app.static_folder, request.path[1:])
 
 @app.route('/')
 @app.route('/index')
