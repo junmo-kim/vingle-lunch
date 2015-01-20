@@ -13,14 +13,19 @@ $( document ).ready(function(){
   });
 
   function upcomming_friday() {
-    var date = new Date()
-    var dayDiff = ((5 - date.getDay()) + 7) % 7
-    date.setDate(date.getDate() + dayDiff)
-    date.setHours(11, 05, 0, 0)
-    return date
+    var date = new Date();
+    var dayDiff = ((5 - date.getDay()) + 7) % 7;
+    date.setDate(date.getDate() + dayDiff);
+    date.setHours(11, 05, 0, 0);
+    return date;
   }
+  
   $('#count_down').countdown(upcomming_friday(), function(event) {
     var totalHours = event.offset.totalDays * 24 + event.offset.hours;
+    if (totalHours == 0 && event.offset.minutes == 0 && event.offset.seconds == 0) {
+      $(this).html('Enjoy friday lunch!');
+      return;
+    }
     $(this).html(event.strftime(totalHours + ' hr %M min %S sec'));
   });
 
