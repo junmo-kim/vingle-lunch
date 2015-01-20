@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block title %}Home{% endblock %}
+{% block title %}{% if not team %}Home{% else %}Team {{ team.title }}{% endif %}{% endblock %}
 {% block content %}
   <div class="row">
     <h3>{% if team %}{{ team.title }}{% else %}Vinglers{% endif %}</h3>
@@ -12,7 +12,7 @@
         <div class="row" style="margin-bottom: 0">
           <div class="col s12 m6 center">Name</div>
           <div class="col s6 m3 center">Team</div>
-          <div class="col s4 m2 center">Eat Lunch</div>
+          <div class="col s4 m2 center">Eat Lunch?</div>
           <div class="col s2 m1 center">Edit</div>
         </div>
       </li>

@@ -8,7 +8,10 @@
       <ul class="card collection with-header">
         <li class="collection-header"><h5>Group {{ loop.index }}</h5></li>
     {% for user in group.users %}
-        <li class="collection-item"><a href="/users/{{ user.id }}" class="green-text text-darken-4" style="text-transform: none">{{ user.name }}</a>{% if group.penalties %}{{ group.penalties[loop.index - 1] }}{% endif %}<span class="badge">{{ user.team.key }}</span></li>
+        <li class="collection-item">
+          <a href="/users/{{ user.id }}" class="green-text text-darken-4" style="text-transform: none">{{ user.name }}</a>
+          {% if group.penalties %}<span>{{ group.penalties[loop.index - 1] }}</span>{% endif %}
+          <span class="badge tooltipped" data-position="top" data-tooltip="{{ user.team.title }}">{{ user.team.key }}</span></li>
     {% endfor %}
       </ul>
     </div>
