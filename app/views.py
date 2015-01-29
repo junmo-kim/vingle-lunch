@@ -85,7 +85,8 @@ def edit_user(user_id):
     if form.validate_on_submit():
         user.name = form.name.data
         user.team = form.team.data
-        user.gender = form.gender.data
+        if (form.gender.data):
+            user.gender = form.gender.data
         db.session.commit()
         return redirect('/')
     form.name.data = user.name
