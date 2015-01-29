@@ -9,12 +9,13 @@
       {{ form.csrf_token }}
       <div class="row">
         <div class="input-field col s12 m6">
+          <i class="mdi-action-account-circle prefix"></i>
           {{ form.name.label }} {{ form.name(class_='validate') }}
         </div>
       </div>
       <div class="row">
         <div class="col s12 m6">
-            {{ form.team.label }} {{ form.team }}
+          {{ form.team.label }} {{ form.team }}
         </div>
       </div>{% if admin %}
       <div class="row">
