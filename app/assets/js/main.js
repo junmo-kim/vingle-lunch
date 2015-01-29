@@ -16,7 +16,7 @@ $( document ).ready(function(){
     var date = new Date();
     var dayDiff = ((5 - date.getDay()) + 7) % 7;
     date.setDate(date.getDate() + dayDiff);
-    date.setHours(11, 05, 0, 0);
+    date.setHours(11, 50, 0, 0);
     return date;
   }
   

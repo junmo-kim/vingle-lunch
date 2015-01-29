@@ -5,6 +5,10 @@ db_repository/
 # Bower
 bower_components/
 
+# Compiled Assets
+app/static/js
+app/static/css
+
 # webassets
 .webassets-cache
 
