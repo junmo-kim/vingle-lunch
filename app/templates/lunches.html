@@ -4,7 +4,7 @@
   <h3>Past Lunches</h3>
   <div class="collection">
   {% for lunch in lunches %}
-    <a class="collection-item" href="/lunches/{{ lunch.id }}">{{ lunch.date.strftime("%Y %B %d") }}<span class="badge">{{ lunch.groups.all()|count }} Groups</span></a>
+    <a class="collection-item" href="{{ url_for('lunch', lunch_id=lunch.id) }}">{{ lunch.date.strftime("%Y %B %d") }}<span class="badge">{{ lunch.groups.all()|count }} Groups</span></a>
   {% endfor %}
   </div>
 {% endblock %}

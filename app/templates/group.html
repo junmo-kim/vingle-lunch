@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block title %}Lunch{% endblock %}
+{% block title %}Group{% endblock %}
 {% block content %}
   <h3>{{ date.strftime("%Y %B %d") }}</h3>
   <div class="row" style="margin-bottom: 0">
@@ -9,7 +9,7 @@
         <li class="collection-header"><h5>Group {{ loop.index }}</h5></li>
     {% for user in group.users %}
         <li class="collection-item">
-          <a href="{{ url_for('user', user_id=user.id) }}" class="green-text text-darken-4" style="text-transform: none">{{ user.name }}</a>
+          <a href="/users/{{ user.id }}" class="green-text text-darken-4" style="text-transform: none">{{ user.absent }}</a>
           {% if group.penalties %}<span>{{ group.penalties[loop.index - 1] }}</span>{% endif %}
           <span class="badge tooltipped" data-position="top" data-tooltip="{{ user.team.title }}">{{ user.team.key }}</span></li>
     {% endfor %}

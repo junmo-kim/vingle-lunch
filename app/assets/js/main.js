@@ -4,10 +4,10 @@ $( document ).ready(function(){
     var text;
     if ($(this).is(":checked")) {
       text = "Yes!";
-      $.ajax("/users/" + user_id + "/eat/yes");
+      $.ajax($SCRIPT_ROOT + "/users/" + user_id + "/eat/yes");
     } else {
       text = "Next...";
-      $.ajax("/users/" + user_id + "/eat/next");
+      $.ajax($SCRIPT_ROOT + "/users/" + user_id + "/eat/next");
     }
     $("#user_eat_label_" + user_id).html(text);
   });

@@ -3,8 +3,8 @@
 {% block content %}
   <h3>{{ user.name }}</h3>
   <div class="row">
-    <a href="/teams/{{ user.team.id }}">Team {{ user.team.title }}</a>
-    <a href="/users/{{ user.id }}/edit" class="right btn waves-effect waves-light">Edit Profile
+    <a href="{{ url_for('team', team_id=user.team.id) }}">Team {{ user.team.title }}</a>
+    <a href="{{ url_for('edit_user', user_id=user.id) }}" class="right btn waves-effect waves-light">Edit Profile
     <i class="mdi-action-settings left"></i></a>
   </div>
   <div class="row">
