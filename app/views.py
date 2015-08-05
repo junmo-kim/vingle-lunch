@@ -131,13 +131,13 @@ def compute_penalty(user, users, past_lunches):
         if group:
             for colleague in users:
                 if group == colleague.group_in_lunch(lunch):
-                    penalty += 1.0 / math.pow(2, (index + 1))
+                    penalty += 8.0 / math.pow(2.0, index)
 
     for colleague in users:
         if user.gender == colleague.gender:
-            penalty += 1.0 / 8
+            penalty += 1.0 / 8.0
         if user.team == colleague.team:
-            penalty += 1.0 / 8
+            penalty += 1.0 / 8.0
 
     return penalty
 
