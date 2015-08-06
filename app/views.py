@@ -67,7 +67,7 @@ def new_user():
     return render_template('edit_user.html', form=form, user=None)
 
 @app.route('/users/deactivated')
-def deactivated_user():
+def deactivated_users():
     users = User.query.filter_by(deactivate=True)
     return render_template('users.html', team=None, users=users)
 

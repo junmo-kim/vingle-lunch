@@ -31,6 +31,6 @@
         </div>
       </li>{% endfor %}
     </ul>
-    {% if not team %}<a href="/users/deactivated" class="grey btn waves-effect waves-light">Deactivated Users</a>{% endif %}
+    {% if not team %}<a href="{{ url_for('deactivated_users') }}" class="grey btn waves-effect waves-light">Deactivated Users</a>{% endif %}
   </div>
 {% endblock %}
