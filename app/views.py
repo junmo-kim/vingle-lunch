@@ -1,7 +1,7 @@
 from app import app, db
 from app.models import Team, User, Group, Lunch
 from app.forms import TeamForm, UserForm, LunchDataForm
-from flask import render_template, redirect, request, send_from_directory
+from flask import render_template, redirect, request, send_from_directory, url_for
 from random import shuffle
 import math
 import json
@@ -37,7 +37,7 @@ def edit_team(team_id):
         team.key = form.key.data
         team.title = form.title.data
         db.session.commit()
-        return redirect('/teams/%d' % (team_id))
+        return redirect(url_for('team', team_id=teamd_id))
     form.key.data = team.key
     form.title.data = team.title
     return render_template('edit_team.html', form=form, team=team)
@@ -49,12 +49,12 @@ def new_team():
         team = Team(form.title.data, form.key.data)
         db.session.add(team)
         db.session.commit()
-        return redirect('/')
+        return redirect(url_for('index'))
     return render_template('edit_team.html', form=form)
 
 @app.route('/users')
 def users():
-    return redirect('/')
+    return redirect(url_for('index'))
 
 @app.route('/users/new', methods=('GET', 'POST'))
 def new_user():
@@ -63,7 +63,7 @@ def new_user():
         user = User(form.name.data, form.team.data)
         db.session.add(user)
         db.session.commit()
-        return redirect('/')
+        return redirect(url_for('index'))
     return render_template('edit_user.html', form=form, user=None)
 
 @app.route('/users/deactivated')
@@ -87,7 +87,7 @@ def edit_user(user_id):
         if (form.gender.data):
             user.gender = form.gender.data
         db.session.commit()
-        return redirect('/')
+        return redirect(url_for('index'))
     form.name.data = user.name
     form.team.data = user.team
     form.gender.data = user.gender
@@ -103,10 +103,12 @@ def activate_user(user_id, state):
     user = User.query.get(user_id)
     if state == 'activate':
         user.deactivate = False
+        db.session.commit()
+        return redirect(url_for('index'))
     elif state == 'deactivate':
         user.deactivate = True
-    db.session.commit()
-    return redirect('/')
+        db.session.commit()
+        return redirect(url_for('deactivated_users'))
 
 @app.route('/users/<int:user_id>/eat/<eat>')
 def eat_lunch(user_id, eat):
@@ -116,7 +118,7 @@ def eat_lunch(user_id, eat):
     elif eat == 'next':
         user.eat = False
     db.session.commit()
-    return redirect('/')
+    return redirect(url_for('index'))
 
 @app.route('/lunches')
 def lunches():
@@ -161,7 +163,7 @@ def create_lunch():
         for user in all_users:
             user.eat = True
         db.session.commit()
-        return redirect('/lunches/%d' % lunch.id)
+        return redirect(url_for('lunch', lunch_id=lunch.id))
     else:
         users = User.query.filter(User.deactivate!=True, User.eat!=False).all()
         shuffle(users)
