@@ -57,4 +57,4 @@ manager.create_api(User, methods=['GET', 'POST', 'DELETE'],
 manager.create_api(Team, methods=['GET'],
                    serializer=serializer(team_schema), deserializer=deserialize(team_schema))
 manager.create_api(Lunch, methods=['GET'],
-                   serializer=serializer(team_schema), deserializer=deserialize(team_schema))
+                   serializer=serializer(lunch_schema), deserializer=deserialize(lunch_schema))
