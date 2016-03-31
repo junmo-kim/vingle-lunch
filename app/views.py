@@ -8,25 +8,29 @@ import json
 import datetime
 import sys
 
+
 @app.route('/robots.txt')
 def static_from_root():
     return send_from_directory(app.static_folder, request.path[1:])
 
+
 @app.route('/')
 def index():
-    users = User.active_users()
+    active_users = User.active_users()
 
     admin = False
     if request.args.get('admin', '') == 'true':
         admin = True
 
-    return render_template('users.html', team=None, users=users, admin=admin)
+    return render_template('users.html', team=None, users=active_users, admin=admin)
+
 
 @app.route('/teams/<int:team_id>')
 def team(team_id):
     team = Team.query.get(team_id)
     users = team.users.order_by(User.eat.desc()).filter(User.deactivate!=True)
     return render_template('users.html', team=team, users=users)
+
 
 @app.route('/teams/<int:team_id>/edit', methods=('GET', 'POST'))
 def edit_team(team_id):
@@ -36,10 +40,11 @@ def edit_team(team_id):
         team.key = form.key.data
         team.title = form.title.data
         db.session.commit()
-        return redirect(url_for('team', team_id=teamd_id))
+        return redirect(url_for('team', team_id=team_id))
     form.key.data = team.key
     form.title.data = team.title
     return render_template('edit_team.html', form=form, team=team)
+
 
 @app.route('/teams/new', methods=('GET', 'POST'))
 def new_team():
@@ -51,9 +56,11 @@ def new_team():
         return redirect(url_for('index'))
     return render_template('edit_team.html', form=form)
 
+
 @app.route('/users')
 def users():
     return redirect(url_for('index'))
+
 
 @app.route('/users/new', methods=('GET', 'POST'))
 def new_user():
@@ -65,16 +72,19 @@ def new_user():
         return redirect(url_for('index'))
     return render_template('edit_user.html', form=form, user=None)
 
+
 @app.route('/users/deactivated')
 def deactivated_users():
     users = User.query.filter_by(deactivate=True)
     return render_template('users.html', team=None, users=users)
+
 
 @app.route('/users/<int:user_id>')
 def user(user_id):
     user = User.query.get(user_id)
     groups = user.recent_groups()
     return render_template('user.html', user=user, recent_groups=groups)
+
 
 @app.route('/users/<int:user_id>/edit', methods=('GET', 'POST'))
 def edit_user(user_id):
@@ -97,6 +107,7 @@ def edit_user(user_id):
 
     return render_template('edit_user.html', form=form, user=user, admin=admin)
 
+
 @app.route('/users/<int:user_id>/<state>')
 def activate_user(user_id, state):
     user = User.query.get(user_id)
@@ -109,6 +120,7 @@ def activate_user(user_id, state):
         db.session.commit()
         return redirect(url_for('deactivated_users'))
 
+
 @app.route('/users/<int:user_id>/eat/<eat>')
 def eat_lunch(user_id, eat):
     user = User.query.get(user_id)
@@ -119,12 +131,15 @@ def eat_lunch(user_id, eat):
     db.session.commit()
     return redirect(url_for('index'))
 
+
 @app.route('/lunches')
 def lunches():
     lunches = Lunch.query.order_by(Lunch.date.desc()).all()
     return render_template('lunches.html', lunches=lunches)
 
 MAX_MEMBER = 5
+
+
 def compute_penalty(user, users, past_lunches):
     penalty = float(math.pow(2.0, len(users))) / 32.0
     for index, lunch in enumerate(past_lunches):
@@ -142,6 +157,7 @@ def compute_penalty(user, users, past_lunches):
             penalty += 1.0 / 8.0
 
     return penalty
+
 
 @app.route('/lunches/new', methods=('GET', 'POST'))
 def create_lunch():
@@ -201,6 +217,7 @@ def create_lunch():
                 group.get('penalties').append(penalty)
 
         return render_template('lunch.html', form=form, date=datetime.datetime.now(), groups=groups, groups_data=json.dumps(groups_data))
+
 
 @app.route('/lunches/<int:lunch_id>')
 def lunch(lunch_id):

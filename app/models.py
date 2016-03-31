@@ -3,6 +3,7 @@ from werkzeug.contrib.cache import SimpleCache
 from marshmallow import Schema, fields, ValidationError, pre_load
 cache = SimpleCache()
 
+
 class User(db.Model):
     __tablename__ = 'users'
     id = db.Column(db.Integer, primary_key=True)
@@ -57,10 +58,10 @@ class UserSchema(Schema):
     deactivate = fields.Boolean()
     eat = fields.Boolean()
     team = fields.Nested('TeamSchema', exclude=('users', ))
-    recent_groups = fields.Method('recent_groups', dump_only=True)
+    recent_groups = fields.Method('get_recent_groups', dump_only=True)
 
-    def recent_groups(self, obj):
-        return obj.recent_groups()
+    def get_recent_groups(self, obj: User) -> object:
+        return list(map(lambda g: group_serializer(g), obj.recent_groups()))
 
 
 user_schema = UserSchema()
@@ -111,6 +112,23 @@ class Group(db.Model):
     users = db.relationship('User', secondary=user_group, backref='groups', lazy='dynamic')
 
     lunch_id = db.Column(db.Integer, db.ForeignKey('lunches.id'))
+
+
+class GroupSchema(Schema):
+    id = fields.Int(dump_only=True)
+    users = fields.Nested('UserSchema', many=True, dump_only=True, exclude=('recent_groups', ))
+    lunch_id = fields.Int(dump_only=True)
+
+
+group_schema = GroupSchema()
+
+
+def group_serializer(instance: Group) -> dict:
+    return group_schema.dump(instance).data
+
+
+def group_deserializer(data: dict) -> Group:
+    return group_schema.load(data).data
 
 
 class Lunch(db.Model):
