@@ -118,4 +118,4 @@ class Lunch(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     date = db.Column(db.DateTime)
 
-    groups = db.relationship('Group', backref='lunches', lazy='dynamic')
+    groups = db.relationship('Group', backref='lunch', lazy='dynamic')
