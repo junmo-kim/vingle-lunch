@@ -126,13 +126,14 @@ def lunches():
 
 MAX_MEMBER = 5
 def compute_penalty(user, users, past_lunches):
-    penalty = len(users) / 32.0
+    penalty = float(math.pow(2.0, len(users))) / 32.0
     for index, lunch in enumerate(past_lunches):
         group = user.group_in_lunch(lunch)
         if group:
             for colleague in users:
-                if group == colleague.group_in_lunch(lunch):
-                    penalty += 8.0 / math.pow(2.0, index)
+                colleague_group = colleague.group_in_lunch(lunch)
+                if colleague_group and group.id == colleague_group.id:
+                    penalty += 1.0 / float(math.pow(2.0, index + 1))
 
     for colleague in users:
         if user.gender == colleague.gender:
