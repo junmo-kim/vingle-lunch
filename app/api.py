@@ -32,7 +32,7 @@ class TeamSchema(Schema):
     id = fields.Int(dump_only=True)
     title = fields.Str()
     key = fields.Str()
-    users = fields.Nested('UserSchema', many=True, exclude=('team', ))
+    users = fields.Nested('UserSchema', many=True, exclude=('team', 'recent_groups'))
 
 team_schema = TeamSchema()
 
