@@ -1,5 +1,6 @@
 from app import db
 from werkzeug.contrib.cache import SimpleCache
+from marshmallow import Schema, fields, ValidationError, pre_load
 cache = SimpleCache()
 
 class User(db.Model):
@@ -11,7 +12,7 @@ class User(db.Model):
     gender = db.Column(db.String(1))
 
     team_id = db.Column(db.Integer, db.ForeignKey('teams.id'))
-    team = db.relationship('Team', backref=db.backref('teams', lazy='dynamic'))
+    team = db.relationship('Team', backref=db.backref('users', lazy='dynamic'))
 
     def __init__(self, name, team=None):
         self.name = name
@@ -24,9 +25,9 @@ class User(db.Model):
 
     @classmethod
     def active_users(self):
-        return self.query.filter(self.deactivate!=True).order_by(self.eat.desc()).all()
+        return self.query.filter(self.deactivate != True).order_by(self.eat.desc()).all()
 
-    def past_groups(self, max_number=3):
+    def recent_groups(self, max_number=3):
         groups = Group.query.filter(Group.users.any(id=self.id))\
                                           .order_by(Group.lunch_id.desc())\
                                           .limit(max_number)
@@ -47,15 +48,37 @@ class User(db.Model):
             except:
                 group = False
             cache.set(self.group_in_lunch_cache_key(lunch), group, timeout=8 * 24 * 60)
-            return  group
+            return group
+
+
+class UserSchema(Schema):
+    id = fields.Int(dump_only=True)
+    name = fields.Str()
+    deactivate = fields.Boolean()
+    eat = fields.Boolean()
+    team = fields.Nested('TeamSchema', exclude=('users', ))
+    recent_groups = fields.Method('recent_groups', dump_only=True)
+
+    def recent_groups(self, obj):
+        return obj.recent_groups()
+
+
+user_schema = UserSchema()
+
+
+def user_serializer(instance):
+    return user_schema.dump(instance).data
+
+
+def user_deserializer(data):
+    return user_schema.load(data).data
+
 
 class Team(db.Model):
     __tablename__ = 'teams'
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(256), unique=True)
     key = db.Column(db.String(32), index=True, unique=True)
-
-    users = db.relationship('User', backref='users', lazy='dynamic')
 
     def __init__(self, title, key):
         self.title = title
@@ -67,24 +90,32 @@ class Team(db.Model):
     def __str__(self):
         return self.title
 
-user_group = db.Table('user_group',
+user_group = db.Table(
+    'user_group',
     db.Column('group_id', db.Integer, db.ForeignKey('groups.id')),
     db.Column('user_id', db.Integer, db.ForeignKey('users.id'))
 )
+
+
+class TeamSchema(Schema):
+    id = fields.Int(dump_only=True)
+    title = fields.Str()
+    key = fields.Str()
+    users = fields.Nested('UserSchema', many=True, exclude=('team', ))
+
 
 class Group(db.Model):
     __tablename__ = 'groups'
     id = db.Column(db.Integer, primary_key=True)
 
-    users = db.relationship('User', secondary=user_group,
-      backref=db.backref('groups', lazy='dynamic'))
+    users = db.relationship('User', secondary=user_group, backref='groups', lazy='dynamic')
 
     lunch_id = db.Column(db.Integer, db.ForeignKey('lunches.id'))
-    lunch = db.relationship('Lunch', backref=db.backref('lunches', lazy='dynamic'))
+
 
 class Lunch(db.Model):
     __tablename__ = 'lunches'
     id = db.Column(db.Integer, primary_key=True)
     date = db.Column(db.DateTime)
 
-    groups = db.relationship('Group', backref='groups', lazy='dynamic')
+    groups = db.relationship('Group', backref='lunches', lazy='dynamic')

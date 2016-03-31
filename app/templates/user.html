@@ -9,7 +9,7 @@
   </div>
   <div class="row">
     <h4>Past Groups</h4>
-    {% for group in past_groups %}
+    {% for group in recent_groups %}
     <div class="col s12 m4">
       <ul class="card collection with-header">
         <li class="collection-header"><h5><a href="{{ url_for('lunch', lunch_id=group.lunch.id) }}">{{ group.lunch.date.strftime("%Y %B %d") }}</a></h5>

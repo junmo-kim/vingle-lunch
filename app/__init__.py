@@ -40,5 +40,4 @@ env.register(
 
 db = SQLAlchemy(app)
 
-from app import views, models
-
+from . import views, models, api

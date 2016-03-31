@@ -6,7 +6,6 @@ from random import shuffle
 import math
 import json
 import datetime
-import operator
 import sys
 
 @app.route('/robots.txt')
@@ -74,8 +73,8 @@ def deactivated_users():
 @app.route('/users/<int:user_id>')
 def user(user_id):
     user = User.query.get(user_id)
-    groups = user.past_groups()
-    return render_template('user.html', user=user, past_groups=groups)
+    groups = user.recent_groups()
+    return render_template('user.html', user=user, recent_groups=groups)
 
 @app.route('/users/<int:user_id>/edit', methods=('GET', 'POST'))
 def edit_user(user_id):
