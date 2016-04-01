@@ -4,6 +4,7 @@ from flask import request
 from flask.views import MethodView
 from flask.json import jsonify
 from marshmallow import Schema, fields, ValidationError, pre_load
+import json
 
 
 def serializer(schema: Schema):
@@ -34,7 +35,11 @@ class UserAPI(MethodView):
             user = User.query.get(user_id)
             return jsonify(serializer(user_schema)(user))
         else:
-            if request.args.get('all'):
+            try:
+                is_all= json.loads(request.args.get('all'))
+            except ValueError:
+                is_all= False
+            if is_all:
                 users = User.query.all()
             else:
                 users = User.active_users()
@@ -92,6 +97,20 @@ class TeamSchema(Schema):
     users = fields.Nested('UserSchema', many=True, exclude=('team', 'recent_groups'))
 
 team_schema = TeamSchema()
+
+
+class TeamAPI(MethodView):
+    def get(self, team_id):
+        if team_id:
+            team = Team.query.get(team_id)
+            return jsonify(serializer(team_schema)(team))
+        else:
+            teams = Team.query.all()
+            return jsonify(serializer(team_schema)(teams, many=True))
+
+team_view = TeamAPI.as_view('team_api')
+app.add_url_rule('/api/teams/', defaults={'team_id': None},
+                 view_func=team_view, methods=['GET, '])
 
 
 class GroupSchema(Schema):
