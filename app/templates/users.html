@@ -4,7 +4,7 @@
   <div class="row">
     <h3>{% if team %}{{ team.title }}{% else %}Vinglers{% endif %}</h3>
   {% if team %}
-    Parent: <a href="{% if team.parent %}{{ url_for('team', team_id=team.parent.id) }}{% endif %}">{{ team.parent.title }}</a>, 
+    Parent: <a href="{% if team.parent %}{{ url_for('team', team_id=team.parent.id) }}{% endif %}">{{ team.parent.title }}</a>,
     Children:
     {% for child_team in team.children %}
       <a href="{% if child_team %}{{ url_for('team', team_id=child_team.id) }}{% endif %}">{{ child_team.title }}</a>{% if not loop.last %}, {% endif %}

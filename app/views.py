@@ -25,6 +25,12 @@ def index():
     return render_template('users.html', team=None, users=active_users, admin=admin)
 
 
+@app.route('/teams')
+def teams():
+    teams = Team.query.all()
+    return render_template('teams.html', teams=teams)
+
+
 @app.route('/teams/<int:team_id>')
 def team(team_id):
     team = Team.query.get(team_id)
