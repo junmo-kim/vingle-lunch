@@ -22,7 +22,7 @@
           <div class="col s12 m6">{% if admin %}{{ user.gender }}{% endif %} <a href="{{ url_for('user', user_id= user.id) }}" class="green-text text-darken-4">{{ user.name }}</a></div>
           <div class="col s6 m3"><a href="{{ url_for('team', team_id=user.team.id) }}">{{ user.team.title }}</a></div>
           <div class="col s4 m2">
-            <form action="#">
+            <form action="{{ url_for('user_eat_api', user_id=user.id) }}">
               <input type="checkbox" id="user_eat_{{ user.id }}"{% if user.eat %} checked="checked" {% endif %} class="user_eat_box" {% if user.deactivate %}disabled="disabled" {% endif %}/>
               <label for="user_eat_{{ user.id }}" id="user_eat_label_{{ user.id }}">{% if user.eat %}Yes!{% else %}Next...{% endif %}</label>
             </form>

@@ -6,5 +6,5 @@ Flask-WTF>=0.10
 Flask-Assets>=0.10
 jsmin>=2.1.0
 cssutils>=1.0
-Flask-Restless
+flask-restful
 marshmallow

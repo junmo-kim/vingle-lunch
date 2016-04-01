@@ -121,17 +121,6 @@ def activate_user(user_id, state):
         return redirect(url_for('deactivated_users'))
 
 
-@app.route('/users/<int:user_id>/eat/<eat>')
-def eat_lunch(user_id, eat):
-    user = User.query.get(user_id)
-    if eat == 'yes':
-        user.eat = True
-    elif eat == 'next':
-        user.eat = False
-    db.session.commit()
-    return redirect(url_for('index'))
-
-
 @app.route('/lunches')
 def lunches():
     lunches = Lunch.query.order_by(Lunch.date.desc()).all()

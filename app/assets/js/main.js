@@ -2,12 +2,20 @@ $( document ).ready(function(){
   $(".user_eat_box").change(function() {
     var user_id = this.id.split("user_eat_")[1];
     var text;
+    var form = $(this).parents('form:first');
+
     if ($(this).is(":checked")) {
       text = "Yes!";
-      $.ajax($SCRIPT_ROOT + "/users/" + user_id + "/eat/yes");
+      $.ajax({
+        url: form.attr('action'),
+        type: 'PUT'
+      });
     } else {
       text = "Next...";
-      $.ajax($SCRIPT_ROOT + "/users/" + user_id + "/eat/next");
+      $.ajax({
+        url: form.attr('action'),
+        type: 'DELETE'
+      });
     }
     $("#user_eat_label_" + user_id).html(text);
   });
