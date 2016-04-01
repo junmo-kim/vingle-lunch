@@ -89,9 +89,9 @@ class User(db.Model):
             if len(teams_in_depth) != 1:
                 if key == 0:
                     last_team = random.choice(tuple(teams_in_depth))
-                break
+                return last_team
             last_team = random.choice(tuple(teams_in_depth))
-        return last_team
+        return None
 
 
 class Team(db.Model):
