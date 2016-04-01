@@ -28,7 +28,7 @@ def index():
 @app.route('/teams/<int:team_id>')
 def team(team_id):
     team = Team.query.get(team_id)
-    users = team.users.order_by(User.eat.desc()).filter(User.deactivate!=True)
+    users = sorted(filter(lambda t: not t.deactivate, team.users), key=lambda t: t.eat)
     return render_template('users.html', team=team, users=users)
 
 
@@ -39,10 +39,14 @@ def edit_team(team_id):
     if form.validate_on_submit():
         team.key = form.key.data
         team.title = form.title.data
+        team.parent = form.parent.data
+        team.inactive = form.inactive.data
         db.session.commit()
         return redirect(url_for('team', team_id=team_id))
     form.key.data = team.key
     form.title.data = team.title
+    form.parent.data = team.parent
+    form.inactive.data = team.inactive
     return render_template('edit_team.html', form=form, team=team)
 
 
@@ -92,13 +96,13 @@ def edit_user(user_id):
     user = User.query.get(user_id)
     if form.validate_on_submit():
         user.name = form.name.data
-        user.team = form.team.data
-        if (form.gender.data):
+        user.teams = form.teams.data
+        if form.gender.data:
             user.gender = form.gender.data
         db.session.commit()
         return redirect(url_for('index'))
     form.name.data = user.name
-    form.team.data = user.team
+    form.teams.data = user.teams
     form.gender.data = user.gender
 
     admin = False
@@ -142,8 +146,8 @@ def compute_penalty(user, users, past_lunches):
     for colleague in users:
         if user.gender == colleague.gender:
             penalty += 1.0 / 8.0
-        if user.team == colleague.team:
-            penalty += 1.0 / 8.0
+
+        penalty += len(user.all_teams.intersection(colleague.all_teams)) * 1.0 / 16.0
 
     return penalty
 

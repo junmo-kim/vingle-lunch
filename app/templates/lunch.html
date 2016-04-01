@@ -11,7 +11,7 @@
         <li class="collection-item">
           <a href="{{ url_for('user', user_id=user.id) }}" class="green-text text-darken-4" style="text-transform: none">{{ user.name }}</a>
           {% if group.penalties %}<span>{{ group.penalties[loop.index - 1] }}</span>{% endif %}
-          <span class="badge tooltipped" data-position="top" data-tooltip="{{ user.team.title }}">{{ user.team.key }}</span></li>
+          <span class="badge tooltipped" data-position="top" data-tooltip="{{ user.repr_team.title }}">{{ user.repr_team.key }}</span></li>
     {% endfor %}
       </ul>
     </div>

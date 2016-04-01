@@ -1,6 +1,15 @@
 from app import db
+from werkzeug.utils import cached_property
 from werkzeug.contrib.cache import SimpleCache
+
 cache = SimpleCache()
+
+
+user_team = db.Table(
+    'user_team',
+    db.Column('user_id', db.Integer, db.ForeignKey('users.id')),
+    db.Column('team_id', db.Integer, db.ForeignKey('teams.id')),
+)
 
 
 class User(db.Model):
@@ -11,8 +20,7 @@ class User(db.Model):
     eat = db.Column(db.Boolean)
     gender = db.Column(db.String(1))
 
-    team_id = db.Column(db.Integer, db.ForeignKey('teams.id'))
-    team = db.relationship('Team', backref=db.backref('users', lazy='dynamic'))
+    teams = db.relationship('Team', secondary=user_team, backref='users', lazy='dynamic')
 
     def __init__(self, name, team=None):
         self.name = name
@@ -50,12 +58,54 @@ class User(db.Model):
             cache.set(self.group_in_lunch_cache_key(lunch), group, timeout=8 * 24 * 60)
             return group
 
+    @property
+    def all_teams(self) -> set:
+        teams = self.teams
+        all_teams = set(teams)
+
+        for team in teams:
+            parent = team
+            while parent.parent:
+                parent = parent.parent
+                all_teams.add(parent)
+
+        return all_teams
+
+    @property
+    def repr_team(self):
+        all_teams = self.all_teams
+
+        for team in self.teams:
+            parent = team
+            while parent.parent:
+                parent = parent.parent
+                all_teams.add(parent)
+
+        teams_by_depth = dict()
+        for team in all_teams:
+            existing = teams_by_depth.get(team.depth)
+            if existing:
+                teams_by_depth.get(team.depth).add(team)
+            else:
+                teams_by_depth[team.depth] = {team}
+
+        last_team = None
+        for key in sorted(teams_by_depth.keys()):
+            teams_in_depth = teams_by_depth.get(key)
+            last_team = list(teams_in_depth)[0]
+            if len(teams_in_depth) != 1:
+                break
+        return last_team
+
 
 class Team(db.Model):
     __tablename__ = 'teams'
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(256), unique=True)
     key = db.Column(db.String(32), index=True, unique=True)
+    parent_id = db.Column(db.Integer, db.ForeignKey('teams.id'))
+    parent = db.relationship('Team', remote_side=[id])
+    inactive = db.Column(db.Boolean, default=True)
 
     def __init__(self, title, key):
         self.title = title
@@ -66,6 +116,15 @@ class Team(db.Model):
 
     def __str__(self):
         return self.title
+
+    @property
+    def depth(self):
+        parent = self
+        depth = 0
+        while parent.parent:
+            depth += 1
+            parent = parent.parent
+        return depth
 
 user_group = db.Table(
     'user_group',

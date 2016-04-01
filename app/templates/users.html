@@ -20,7 +20,9 @@
       <li class="collection-item">
         <div class="row" style="margin-bottom: 0">
           <div class="col s12 m6">{% if admin %}{{ user.gender }}{% endif %} <a href="{{ url_for('user', user_id= user.id) }}" class="green-text text-darken-4">{{ user.name }}</a></div>
-          <div class="col s6 m3"><a href="{{ url_for('team', team_id=user.team.id) }}">{{ user.team.title }}</a></div>
+        {% with user_team=team or user.repr_team %}
+          <div class="col s6 m3"><a href="{% if user_team %}{{ url_for('team', team_id=user_team.id) }}{% endif %}">{{ user_team }}</a></div>
+        {% endwith %}
           <div class="col s4 m2">
             <form action="{{ url_for('user_eat_api', user_id=user.id) }}">
               <input type="checkbox" id="user_eat_{{ user.id }}"{% if user.eat %} checked="checked" {% endif %} class="user_eat_box" {% if user.deactivate %}disabled="disabled" {% endif %}/>

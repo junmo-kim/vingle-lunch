@@ -3,7 +3,9 @@
 {% block content %}
   <h3>{{ user.name }}</h3>
   <div class="row">
-    <a href="{{ url_for('team', team_id=user.team.id) }}">Team {{ user.team.title }}</a>
+  {% with team=user.repr_team %}
+    <a href="{% if team %}{{ url_for('team', team_id=team.id) }}{% endif %}">Team {{ user.repr_team.title }}</a>
+  {% endwith %}
     <a href="{{ url_for('edit_user', user_id=user.id) }}" class="right btn waves-effect waves-light">Edit Profile
     <i class="mdi-action-settings left"></i></a>
   </div>
@@ -15,7 +17,7 @@
         <li class="collection-header"><h5><a href="{{ url_for('lunch', lunch_id=group.lunch.id) }}">{{ group.lunch.date.strftime("%Y %B %d") }}</a></h5>
         </li>
     {% for colleague in group.users %}{% if not user.id == colleague.id %}
-        <li class="collection-item"><a href="{{ url_for('user', user_id=colleague.id) }}" class="green-text text-darken-4" style="text-transform: none">{{ colleague.name }}</a><span class="badge">{{ colleague.team.key }}</span></li>
+        <li class="collection-item"><a href="{{ url_for('user', user_id=colleague.id) }}" class="green-text text-darken-4" style="text-transform: none">{{ colleague.name }}</a><span class="badge">{{ colleague.repr_team.key }}</span></li>
     {% endif %}{% endfor %}
       </ul>
     </div>
