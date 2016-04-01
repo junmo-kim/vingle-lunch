@@ -1,6 +1,7 @@
 from app import db
 from werkzeug.utils import cached_property
 from werkzeug.contrib.cache import SimpleCache
+import random
 
 cache = SimpleCache()
 
@@ -75,12 +76,6 @@ class User(db.Model):
     def repr_team(self):
         all_teams = self.all_teams
 
-        for team in self.teams:
-            parent = team
-            while parent.parent:
-                parent = parent.parent
-                all_teams.add(parent)
-
         teams_by_depth = dict()
         for team in all_teams:
             existing = teams_by_depth.get(team.depth)
@@ -89,12 +84,13 @@ class User(db.Model):
             else:
                 teams_by_depth[team.depth] = {team}
 
-        last_team = None
         for key in sorted(teams_by_depth.keys()):
             teams_in_depth = teams_by_depth.get(key)
-            last_team = list(teams_in_depth)[0]
             if len(teams_in_depth) != 1:
+                if key == 0:
+                    last_team = random.choice(tuple(teams_in_depth))
                 break
+            last_team = random.choice(tuple(teams_in_depth))
         return last_team
 
 
