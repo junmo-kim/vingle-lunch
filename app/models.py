@@ -104,7 +104,7 @@ class Team(db.Model):
     title = db.Column(db.String(256), unique=True)
     key = db.Column(db.String(32), index=True, unique=True)
     parent_id = db.Column(db.Integer, db.ForeignKey('teams.id'))
-    parent = db.relationship('Team', remote_side=[id])
+    parent = db.relationship('Team', remote_side=[id], backref='children')
     inactive = db.Column(db.Boolean, default=True)
 
     def __init__(self, title, key):

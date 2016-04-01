@@ -3,8 +3,14 @@
 {% block content %}
   <div class="row">
     <h3>{% if team %}{{ team.title }}{% else %}Vinglers{% endif %}</h3>
-  {% if team %}<a href="{{ url_for('edit_team', team_id=team.id) }}" class="right btn waves-effect waves-light">Edit Team
-    <i class="mdi-action-settings left"></i></a>{% endif %}
+  {% if team %}
+    Children:
+    {% for child_team in team.children %}
+      <a href="{% if child_team %}{{ url_for('team', team_id=child_team.id) }}{% endif %}">{{ child_team.title }}</a>{% if not loop.last %}, {% endif %}
+    {% endfor %}
+    <a href="{{ url_for('edit_team', team_id=team.id) }}" class="right btn waves-effect waves-light">Edit Team
+    <i class="mdi-action-settings left"></i></a>
+  {% endif %}
   </div>
   <div class="row">
     <ul class="collection with-header">
