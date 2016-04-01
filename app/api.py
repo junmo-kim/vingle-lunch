@@ -8,23 +8,32 @@ import json
 
 
 def serializer(schema: Schema):
-    return lambda instance, many=None: schema.dump(instance, many=many).data
+    def dump(instance, many=None):
+        return schema.dump(instance, many).data
+    return dump
 
 
 def deserializer(schema: Schema):
-    return lambda data, many=None: schema.load(data, many=many).data
+    def load(data, many=None, partial=None):
+        return schema.load(data, many, partial).data
+    return load
 
 
-class UserSchema(Schema):
+class UserSimpleSchema(Schema):
     id = fields.Int(dump_only=True)
     name = fields.Str()
     deactivate = fields.Boolean()
     eat = fields.Boolean()
-    team = fields.Nested('TeamSchema', exclude=('users', ))
+    team = fields.Nested('TeamSchema', exclude=('users',))
+
+user_simple_schema = UserSimpleSchema()
+
+
+class UserSchema(UserSimpleSchema):
     recent_groups = fields.Method('get_recent_groups', dump_only=True)
 
     def get_recent_groups(self, obj: User) -> object:
-        return list(map(lambda group: serializer(group_schema)(group), obj.recent_groups()))
+        return serializer(group_schema)(obj.recent_groups(), many=True)
 
 user_schema = UserSchema()
 
@@ -36,15 +45,15 @@ class UserAPI(MethodView):
             return jsonify(serializer(user_schema)(user))
         else:
             try:
-                is_all= json.loads(request.args.get('all'))
-            except ValueError:
-                is_all= False
+                is_all = json.loads(request.args.get('all'))
+            except (ValueError, TypeError) as e:
+                is_all = False
             if is_all:
                 users = User.query.all()
             else:
                 users = User.active_users()
             return jsonify(dict(
-                data=serializer(user_schema)(users, many=True)
+                data=serializer(user_simple_schema)(users, many=True)
             ))
 
 
