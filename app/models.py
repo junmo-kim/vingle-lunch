@@ -19,7 +19,7 @@ class User(db.Model):
     name = db.Column(db.String(256), unique=True)
     deactivate = db.Column(db.Boolean, index=True)
     eat = db.Column(db.Boolean)
-    gender = db.Column(db.String(1))
+    gender = db.Column(db.String(1), default=None, nullable=True)
 
     teams = db.relationship('Team', secondary=user_team, backref='users', lazy='dynamic')
 
