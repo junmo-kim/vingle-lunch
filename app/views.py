@@ -99,7 +99,7 @@ def user(user_id):
 @app.route('/users/<int:user_id>/edit', methods=('GET', 'POST'))
 def edit_user(user_id):
     admin = False
-    if request.args.get('admin', '') == 'true':
+    if request.args.get('admin', '') == 'true' or request.form.get('admin') == 'true':
         admin = True
 
     form = UserForm()

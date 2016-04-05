@@ -26,6 +26,7 @@
         <div class="col s12 m6">
           {{ form.gender.label }} {{ form.gender }}{% for error in form.gender.errors %}
           {{ error }}{% endfor %}
+          <input type="hidden" name="admin" value="true">
         </div>
       </div>{% endif %}
       <div class="row">
