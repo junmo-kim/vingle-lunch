@@ -9,20 +9,22 @@
       {{ form.csrf_token }}
       <div class="row">
         <div class="input-field col s12 m6">
-          <i class="mdi-action-account-circle prefix"></i>
-          {{ form.name.label }} {{ form.name(class_='validate') }}{% for error in form.name.errors %}
+          <i class="prefix material-icons">account_circle</i>
+          {{ form.name.label }}
+          {{ form.name(class_='validate') }}{% for error in form.name.errors %}
           {{ error }}{% endfor %}
         </div>
       </div>
       <div class="row">
-        <div class="col s12 m6">
-          {{ form.teams.label }} {{ form.teams }}{% for error in form.teams.errors %}
+        <div class="input-field col s12 m6">
+          {{ form.teams }}{% for error in form.teams.errors %}
           {{ error }}{% endfor %}
+          {{ form.teams.label }}
         </div>
       </div>
       <div class="row"{% if not admin %} style="display: none"{% endif %}>
         <div class="col s12 m6">
-            {{ form.gender.label }} {{ form.gender }}{% for error in form.gender.errors %}
+          {{ form.gender.label }} {{ form.gender }}{% for error in form.gender.errors %}
           {{ error }}{% endfor %}
         </div>
       </div>
