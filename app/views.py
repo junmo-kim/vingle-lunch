@@ -27,8 +27,8 @@ def index():
 
 @app.route('/teams')
 def teams():
-    teams = Team.query.all()
-    return render_template('teams.html', teams=teams)
+    all_teams = Team.query.all()
+    return render_template('teams.html', teams=all_teams)
 
 
 @app.route('/teams/<int:team_id>')
@@ -76,7 +76,7 @@ def users():
 def new_user():
     form = UserForm()
     if form.validate_on_submit():
-        user = User(form.name.data, form.team.data)
+        user = User(form.name.data, form.teams.data)
         db.session.add(user)
         db.session.commit()
         return redirect(url_for('index'))
@@ -98,22 +98,23 @@ def user(user_id):
 
 @app.route('/users/<int:user_id>/edit', methods=('GET', 'POST'))
 def edit_user(user_id):
-    form = UserForm()
-    user = User.query.get(user_id)
-    if form.validate_on_submit():
-        user.name = form.name.data
-        user.teams = form.teams.data
-        if form.gender.data:
-            user.gender = form.gender.data
-        db.session.commit()
-        return redirect(url_for('index'))
-    form.name.data = user.name
-    form.teams.data = user.teams
-    form.gender.data = user.gender
-
     admin = False
     if request.args.get('admin', '') == 'true':
         admin = True
+
+    form = UserForm()
+    user = User.query.get(user_id)
+    if request.method == 'POST' and form.validate_on_submit():
+        user.name = form.name.data
+        user.teams = form.teams.data
+        if admin:
+            user.gender = form.gender.data
+        db.session.commit()
+        return redirect(url_for('index'))
+
+    form.name.data = user.name
+    form.teams.data = user.teams
+    form.gender.data = user.gender
 
     return render_template('edit_user.html', form=form, user=user, admin=admin)
 

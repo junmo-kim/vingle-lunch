@@ -5,6 +5,7 @@ from wtforms.ext.sqlalchemy.fields import QuerySelectField, QuerySelectMultipleF
 from wtforms.validators import DataRequired, Optional
 from app.models import Team
 
+
 def enabled_teams():
     return Team.query.all()
 
@@ -19,9 +20,9 @@ class TeamForm(Form):
 
 class UserForm(Form):
     name = StringField('Name', validators=[DataRequired()])
-    teams = QuerySelectMultipleField('Teams', query_factory=enabled_teams, allow_blank=False,
-                                     blank_text='Choose your teams')
-    gender = SelectField('Gender', validators=[Optional()],
+    teams = QuerySelectMultipleField('Teams', query_factory=enabled_teams, validators=[DataRequired()],
+                                     allow_blank=True, blank_text='Choose your teams')
+    gender = SelectField('Gender', default='', validators=[Optional()],
                          choices=[(None, 'Not set'), ('m', 'Male'), ('f', 'Female'), ('q', 'Other')])
 
 

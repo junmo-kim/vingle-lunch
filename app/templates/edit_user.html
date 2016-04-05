@@ -10,21 +10,22 @@
       <div class="row">
         <div class="input-field col s12 m6">
           <i class="mdi-action-account-circle prefix"></i>
-          {{ form.name.label }} {{ form.name(class_='validate') }}
+          {{ form.name.label }} {{ form.name(class_='validate') }}{% for error in form.name.errors %}
+          {{ error }}{% endfor %}
         </div>
       </div>
       <div class="row">
         <div class="col s12 m6">
-          {{ form.teams.label }} {{ form.teams }}
+          {{ form.teams.label }} {{ form.teams }}{% for error in form.teams.errors %}
+          {{ error }}{% endfor %}
         </div>
-      </div>{% if admin %}
-      <div class="row">
+      </div>
+      <div class="row"{% if not admin %} style="display: none"{% endif %}>
         <div class="col s12 m6">
-            {{ form.gender.label }} {{ form.gender }}
+            {{ form.gender.label }} {{ form.gender }}{% for error in form.gender.errors %}
+          {{ error }}{% endfor %}
         </div>
-      </div>{% else %}
-      <input id="gender" name="gender" type="hidden" value="{{ user.gender }}">
-      {% endif %}
+      </div>
       <div class="row">
         <div class="col s12 m6">
           {% if user %}
